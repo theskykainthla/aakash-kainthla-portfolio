@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aakash Kainthla</title>
-</head>
 
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <h1>AAKASH KAINTHLA</h1>
-  <p>Filmmaker • Web Developer</p>
+<title>Aakash Kainthla</title>
 
-</body>
-</html>
 <style>
+
 body{
   margin:0;
   background:#050505;
@@ -23,7 +18,7 @@ body{
 }
 
 h1{
-  margin-top:45vh;
+  margin-top:40vh;
   font-size:42px;
   letter-spacing:5px;
 }
@@ -32,11 +27,21 @@ p{
   color:#999;
   letter-spacing:3px;
 }
+
 </style>
-<script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js">
-  
-</script>
+
+</head>
+
+<body>
+
+<h1>AAKASH KAINTHLA</h1>
+
+<p>FILMMAKER • WEB DEVELOPER</p>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js"></script>
+
 <script>
+
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -47,11 +52,43 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.z = 5;
-</script>
+
 const renderer = new THREE.WebGLRenderer({
   antialias:true,
   alpha:true
 });
 
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(innerWidth,innerHeight);
+
 document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry();
+
+const material = new THREE.MeshBasicMaterial({
+  color:0x00ff00
+});
+
+const cube = new THREE.Mesh(
+  geometry,
+  material
+);
+
+scene.add(cube);
+
+function animate(){
+
+  requestAnimationFrame(animate);
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene,camera);
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
