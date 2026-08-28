@@ -9,23 +9,43 @@
 
 <style>
 
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   background:#050505;
   color:white;
   font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.info{
+  position:fixed;
+  top:38%;
+  width:100%;
   text-align:center;
+  z-index:2;
+  pointer-events:none;
 }
 
 h1{
-  margin-top:40vh;
   font-size:42px;
   letter-spacing:5px;
+  margin:0;
 }
 
 p{
   color:#999;
-  letter-spacing:3px;
+  letter-spacing:4px;
 }
 
 </style>
@@ -34,59 +54,128 @@ p{
 
 <body>
 
-<h1>AAKASH KAINTHLA</h1>
+<canvas id="canvas"></canvas>
 
-<p>FILMMAKER • WEB DEVELOPER</p>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js"></script>
+<div class="info">
+  <h1>AAKASH KAINTHLA</h1>
+  <p>FILMMAKER • WEB DEVELOPER</p>
+</div>
 
 <script>
 
-const scene = new THREE.Scene();
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const camera = new THREE.PerspectiveCamera(
-  75,
-  innerWidth / innerHeight,
-  0.1,
-  1000
-);
+let w;
+let h;
 
-camera.position.z = 5;
+function resize(){
 
-const renderer = new THREE.WebGLRenderer({
-  antialias:true,
-  alpha:true
-});
-
-renderer.setSize(innerWidth,innerHeight);
-
-document.body.appendChild(renderer.domElement);
-
-const geometry = new THREE.BoxGeometry();
-
-const material = new THREE.MeshBasicMaterial({
-  color:0x00ff00
-});
-
-const cube = new THREE.Mesh(
-  geometry,
-  material
-);
-
-scene.add(cube);
-
-function animate(){
-
-  requestAnimationFrame(animate);
-
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
-  renderer.render(scene,camera);
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
 
 }
 
-animate();
+resize();
+
+window.addEventListener("resize",resize);
+
+
+/* 3D CUBE */
+
+let angle = 0;
+
+const points = [
+
+  [-1,-1,-1],
+  [ 1,-1,-1],
+  [ 1, 1,-1],
+  [-1, 1,-1],
+
+  [-1,-1, 1],
+  [ 1,-1, 1],
+  [ 1, 1, 1],
+  [-1, 1, 1]
+
+];
+
+const lines = [
+
+  [0,1],
+  [1,2],
+  [2,3],
+  [3,0],
+
+  [4,5],
+  [5,6],
+  [6,7],
+  [7,4],
+
+  [0,4],
+  [1,5],
+  [2,6],
+  [3,7]
+
+];
+
+
+function project(point){
+
+  let x = point[0];
+  let y = point[1];
+  let z = point[2];
+
+  let cos = Math.cos(angle);
+  let sin = Math.sin(angle);
+
+  let rx = x*cos - z*sin;
+  let rz = x*sin + z*cos;
+
+  let scale = 180 / (rz + 5);
+
+  return {
+
+    x:w/2 + rx*scale,
+    y:h/2 + y*scale
+
+  };
+
+}
+
+
+function draw(){
+
+  ctx.clearRect(0,0,w,h);
+
+  const projected =
+    points.map(project);
+
+  ctx.strokeStyle =
+    "#ffffff";
+
+  ctx.lineWidth = 2;
+
+  lines.forEach(line=>{
+
+    const a = projected[line[0]];
+    const b = projected[line[1]];
+
+    ctx.beginPath();
+
+    ctx.moveTo(a.x,a.y);
+    ctx.lineTo(b.x,b.y);
+
+    ctx.stroke();
+
+  });
+
+  angle += 0.01;
+
+  requestAnimationFrame(draw);
+
+}
+
+draw();
 
 </script>
 
